@@ -39,7 +39,9 @@ module.exports = class userController {
     })
 
     await req.user.save()
-    return res.status(201).send()
+    return res.status(201).send({
+      namespaces: req.user.namespaces,
+    })
   }
 
   static async destroy(req, res) {
@@ -54,7 +56,9 @@ module.exports = class userController {
     req.user.namespaces.id(id).remove()
 
     await req.user.save()
-    return res.status(200).send()
+    return res.status(200).send({
+      namespaces: req.user.namespaces,
+    })
   }
 
   static async show(req, res) {

@@ -12,7 +12,7 @@ module.exports = class userController {
 
     const {username, password, passwordConfirmation, name, email} = req.body
 
-    if (!username || !password || !passwordConfirmation || !email) {
+    if (!username || !password || !passwordConfirmation) {
       return res.status(400).send({
         message: 'Insuficient data',
       })
@@ -70,6 +70,7 @@ module.exports = class userController {
     }
 
     user.token = SHA256((new Date).toString())
+    await user.save()
 
     return res.status(200).send({
       user,
