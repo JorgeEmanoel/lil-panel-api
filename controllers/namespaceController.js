@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const toSlug = require('../helpers/toSlug')
 
-module.exports = class userController {
+module.exports = class namespaceController {
   static async index(req, res) {
     return res.status(200).send({
       namespaces: req.user.namespaces,
