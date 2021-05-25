@@ -6,6 +6,7 @@ app.use(require('cors')())
 const userController = require('./controllers/userController.js')
 const namespaceController = require('./controllers/namespaceController.js')
 const panelController = require('./controllers/panelController.js')
+const cardController = require('./controllers/cardController.js')
 const authMiddleware = require('./middleware/authMiddleware.js')
 const optionalAuthMiddleware = require('./middleware/optionalAuthMiddleware.js')
 
@@ -24,6 +25,10 @@ app.delete('/namespaces/:id', authMiddleware, namespaceController.destroy)
 app.get('/namespaces/:slug', optionalAuthMiddleware, namespaceController.show)
 
 app.post('/panels', authMiddleware, panelController.store)
+app.get('/panels/:id', authMiddleware, panelController.show)
+app.post('/cards', authMiddleware, cardController.store)
+app.delete('/cards/:id', authMiddleware, cardController.delete)
+app.put('/cards/:id', authMiddleware, cardController.update)
 
 app.listen(process.env.APP_PORT, () => {
   console.log('lil-panel-api online on port ' + process.env.APP_PORT)

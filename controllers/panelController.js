@@ -25,4 +25,28 @@ module.exports = class panelController {
       namespaces: req.user.namespaces,
     })
   }
+
+  static async show(req, res) {
+    const {id} = req.params
+
+    const namespace = req.user.namespaces.filter(n => !!n.panels.id(id))[0]
+
+    if (!namespace) {
+      return res.status(404).send({
+        message: 'Panel not found',
+      })
+    }
+
+    const panel = namespace.panels.id(id)
+
+    if (!panel) {
+      return res.status(404).send({
+        message: 'Panel not found',
+      })
+    }
+    
+    return res.status(200).send({
+      panel,
+    })
+  }
 }
