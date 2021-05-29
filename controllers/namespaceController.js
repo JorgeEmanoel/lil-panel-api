@@ -9,9 +9,9 @@ module.exports = class namespaceController {
   }
 
   static async store(req, res) {
-    const {name, visibility} = req.body
+    const { name, visibility } = req.body
 
-    if (!name || !visibility) {
+    if (!name) {
       return res.status(400).send({
         message: 'Insuficient data',
       })
@@ -27,25 +27,27 @@ module.exports = class namespaceController {
 
       if (namespace.length) {
         return res.status(422).send({
-          message: 'This name has been already taken by another public namespace',
+          message:
+            'This name has already been taken by another public namespace',
         })
       }
     }
 
     req.user.namespaces.push({
       name,
-      visibility,
+      visibility: 'private',
       slug,
     })
 
     await req.user.save()
     return res.status(201).send({
       namespaces: req.user.namespaces,
+      message: 'Namespace created',
     })
   }
 
   static async destroy(req, res) {
-    const {id} = req.params
+    const { id } = req.params
 
     if (!req.user.namespaces.id(id)) {
       return res.status(404).send({
@@ -58,16 +60,14 @@ module.exports = class namespaceController {
     await req.user.save()
     return res.status(200).send({
       namespaces: req.user.namespaces,
+      message: 'Namespace deleted',
     })
   }
 
   static async show(req, res) {
-    const {slug} = req.params
+    const { slug } = req.params
 
-    const user = await User.findOne(
-      {'namespaces.slug': slug},
-      'namespaces'
-    )
+    const user = await User.findOne({ 'namespaces.slug': slug }, 'namespaces')
 
     if (!user) {
       return res.status(404).send({
@@ -75,7 +75,7 @@ module.exports = class namespaceController {
       })
     }
 
-    const namespace = user.namespaces.filter(n => n.slug === slug)[0]
+    const namespace = user.namespaces.filter((n) => n.slug === slug)[0]
 
     if (
       namespace.isPrivate() &&
@@ -88,6 +88,36 @@ module.exports = class namespaceController {
 
     return res.status(200).send({
       namespace,
+    })
+  }
+
+  static async update(req, res) {
+    const { name } = req.body
+    const { id } = req.params
+
+    if (!name ) {
+      return res.status(400).send({
+        message: 'Insuficient data',
+      })
+    }
+
+    const namespace = req.user.namespaces.id(id)
+
+    if (!namespace) {
+      return res.status(404).send({
+        message: 'Namespace not found',
+      })
+    }
+
+    const slug = toSlug(name)
+
+    namespace.name = name
+    namespace.slug = slug
+
+    await req.user.save()
+    return res.status(201).send({
+      namespaces: req.user.namespaces,
+      message: 'Namespace updated',
     })
   }
 }

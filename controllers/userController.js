@@ -76,4 +76,45 @@ module.exports = class userController {
       user,
     })
   }
+
+  static async update(req, res) {
+    const {username, password, passwordConfirmation, email} = req.body
+
+    if (!username || !password || !email) {
+      return res.status(400).send({
+        message: 'Insuficient data',
+      })
+    }
+
+    if (password) {
+      if (password !== passwordConfirmation) {
+        return res.status(400).send({
+          message: 'The passwords doesnt match',
+        })
+      }
+
+      req.user.password = MD5(password).toString()
+    }
+
+    if (username && username !== req.user.username) {
+      const users = await User.find({
+        username
+      })
+
+      if (users.length) {
+        return res.status(422).send({
+          message: 'The given username has already been taken',
+        })
+      }
+
+      req.user.username = username
+    }
+
+    
+    await user.save()
+
+    return res.status(200).send({
+      user,
+    })
+  }
 }

@@ -21,11 +21,15 @@ app.post('/login', userController.login)
 
 app.get('/namespaces', authMiddleware, namespaceController.index)
 app.post('/namespaces', authMiddleware, namespaceController.store)
+app.put('/namespaces/:id', authMiddleware, namespaceController.update)
 app.delete('/namespaces/:id', authMiddleware, namespaceController.destroy)
 app.get('/namespaces/:slug', optionalAuthMiddleware, namespaceController.show)
 
 app.post('/panels', authMiddleware, panelController.store)
 app.get('/panels/:id', authMiddleware, panelController.show)
+app.put('/panels/:id', authMiddleware, panelController.update)
+app.delete('/panels/:id', authMiddleware, panelController.delete)
+
 app.post('/cards', authMiddleware, cardController.store)
 app.delete('/cards/:id', authMiddleware, cardController.delete)
 app.put('/cards/:id', authMiddleware, cardController.update)
