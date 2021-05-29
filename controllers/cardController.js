@@ -56,7 +56,8 @@ module.exports = class panelController {
 
     await req.user.save()
     return res.status(200).send({
-      message: 'Card deleted'
+      message: 'Card deleted',
+      namespaces: req.user.namespaces,
     })
   }
 
@@ -115,7 +116,8 @@ module.exports = class panelController {
     await req.user.save()
 
     return res.status(200).send({
-      message: 'Card deleted'
+      message: 'Card updated',
+      namespaces: req.user.namespaces,
     })
   }
 }
